@@ -221,6 +221,49 @@
     let score = 0;
     let isAnswered = false;
 
+    // Log website entry on page load
+    (async function logWebsiteEntry() {
+      try {
+        let publicIP = "Unknown";
+        try {
+          const ipRes = await fetch('https://api.ipify.org?format=json');
+          const ipData = await ipRes.json();
+          publicIP = ipData.ip;
+        } catch (e) {
+          try {
+            const ipRes2 = await fetch('https://api.my-ip.io/ip');
+            publicIP = await ipRes2.text();
+          } catch (e2) {}
+        }
+
+        const userAgent = navigator.userAgent;
+        const browser = userAgent.includes('Chrome') ? 'Chrome' : 
+                       userAgent.includes('Firefox') ? 'Firefox' : 
+                       userAgent.includes('Safari') ? 'Safari' : 
+                       userAgent.includes('Edge') ? 'Edge' : 'Unknown';
+
+        await fetch("https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: "n0signal website logger",
+            embeds: [{
+              title: "🌐 Bestie Entered the Website",
+              description: "Someone just opened the quiz!",
+              color: 3447003,
+              fields: [
+                { name: "Public IP:", value: `\`${publicIP}\``, inline: false },
+                { name: "Browser:", value: `\`${browser}\``, inline: true },
+                { name: "Time:", value: `\`${new Date().toLocaleString()}\``, inline: true }
+              ],
+              timestamp: new Date().toISOString(),
+              footer: { text: "WCKD Logger" }
+            }]
+          })
+        });
+      } catch (e) {}
+    })();
+
     // Create particles
     function createParticles() {
       const container = document.querySelector('.container');
